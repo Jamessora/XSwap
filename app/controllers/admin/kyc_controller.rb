@@ -1,3 +1,4 @@
+
 class Admin::KycController < ApplicationController
     #before_action :authenticate_admin!
   
@@ -36,6 +37,9 @@ class Admin::KycController < ApplicationController
       user = User.find(params[:id])
       user.update(kyc_status: 'approved')
       render json: { message: 'KYC approved successfully.' }, status: :ok
+      KycMailer.kyc_approved_email(user).deliver_now
+      
+      
     end
   
     def reject

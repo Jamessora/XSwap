@@ -1,6 +1,7 @@
 {
   "name": "xswap-fe",
   "private": true,
+  "proxy": "https://api.coingecko.com",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

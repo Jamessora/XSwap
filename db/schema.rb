@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_22_031747) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_29_012656) do
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -43,6 +43,36 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_031747) do
     t.index ["user_id"], name: "index_kycs_on_user_id"
   end
 
+  create_table "portfolio_items", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "token_id", null: false
+    t.float "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token_id"], name: "index_portfolio_items_on_token_id"
+    t.index ["user_id"], name: "index_portfolio_items_on_user_id"
+  end
+
+  create_table "tokens", force: :cascade do |t|
+    t.string "ticker"
+    t.string "name"
+    t.decimal "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.string "transaction_type"
+    t.float "transaction_amount"
+    t.float "transaction_price"
+    t.integer "user_id", null: false
+    t.integer "token_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token_id"], name: "index_transactions_on_token_id"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -56,9 +86,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_031747) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "kyc_status"
+    t.decimal "balance", precision: 15, scale: 10, default: "1000.0"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "kycs", "users"
+  add_foreign_key "portfolio_items", "tokens"
+  add_foreign_key "portfolio_items", "users"
+  add_foreign_key "transactions", "tokens"
+  add_foreign_key "transactions", "users"
 end

@@ -20,3 +20,23 @@ export const submitKYC = async (kycData) => {
     };
   
 
+    export const fetchKYCStatus = async () => {
+      const token = localStorage.getItem('auth_token');
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+      };
+    
+      const response = await fetch('http://localhost:3000/users/sessions/kyc_status', {
+        method: 'GET',
+        headers,
+      });
+    
+      if (!response.ok) {
+        throw new Error('Failed to fetch KYC status');
+      }
+    
+      const data = await response.json();
+      return data.kyc_status;
+    };
+    
+    

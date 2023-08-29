@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  transaction_type: MyString
+  transaction_quantity: 1.5
+  transaction_price: 1.5
+  user: one
+  token: one
+
+two:
+  transaction_type: MyString
+  transaction_quantity: 1.5
+  transaction_price: 1.5
+  user: two
+  token: two
