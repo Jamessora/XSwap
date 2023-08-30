@@ -6,8 +6,9 @@ import apiBaseURL from '../../apiConfig';
 const AdminAllTradersPage = () => {
   const [traders, setTraders] = useState([]);
 
+  //`${apiBaseURL}/admin/allTraders`
   useEffect(() => {
-    fetch(`${apiBaseURL}/admin/allTraders`)
+    fetch('https://xswap.onrender.com/admin/allTraders')
       .then(response => response.json())
       .then(data => setTraders(data));
   }, []);
