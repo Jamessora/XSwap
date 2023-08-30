@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import apiBaseURL from '../../apiConfig';
 
 
 const AdminAllTradersPage = () => {
   const [traders, setTraders] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/admin/allTraders')
+    fetch(`${apiBaseURL}/admin/allTraders`)
       .then(response => response.json())
       .then(data => setTraders(data));
   }, []);
