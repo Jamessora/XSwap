@@ -6,6 +6,7 @@ import apiBaseURL from '../../apiConfig';
 const AdminAllTradersPage = () => {
   const [traders, setTraders] = useState([]);
 
+ 
   //`${apiBaseURL}/admin/allTraders`
   useEffect(() => {
     fetch(`${apiBaseURL}/admin/allTraders`)

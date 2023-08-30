@@ -1,9 +1,11 @@
+// apiConfig.js
 let apiBaseURL;
 
-if (process.env.NODE_ENV === 'production') {
-  apiBaseURL = 'https://xswap.onrender.com';
+if (typeof window !== 'undefined') { // you're in the browser
+    apiBaseURL = window.location.hostname === "localhost" ? 'http://localhost:3000' : 'https://xswap.onrender.com';
 } else {
-  apiBaseURL = 'http://localhost:3000';
+    // you're in Node.js
+    apiBaseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000';
 }
 
 export default apiBaseURL;
