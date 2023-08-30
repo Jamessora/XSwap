@@ -11,6 +11,8 @@ import TransactionPage from './pages/trader/TransactionsPage.jsx';
 import AdminCreateTraderPage from './pages/admin/AdminCreateTraderPage.jsx'
 import AdminEditTraderPage from  './pages/admin/AdminEditTraderPage.jsx'
 import AdminAllTradersPage from  './pages/admin/AdminAllTradersPage.jsx'
+import AdminAllTransactionsPage from  './pages/admin/AdminAllTransactionsPage'
+
 
 import './App.css'
 
@@ -34,7 +36,7 @@ function App() {
         <Route path="/AdminCreateTrader" element={<AdminCreateTraderPage/>} />
         <Route path="/admin/editTrader/:id" element={<AdminEditTraderPage/>} />
         <Route path="/AdminAllTraders" element={<AdminAllTradersPage/>} />
-        {/* will add more */}
+        <Route path="/AdminAllTransactions" element={<AdminAllTransactionsPage/>} />
       </Routes>
     </Router>
   );

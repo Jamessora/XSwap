@@ -26,7 +26,7 @@ const AdminEditTraderPage = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password, balance, kyc_status: kycStatus }),
+      body: JSON.stringify({user:{ email, password, balance, kyc_status: kycStatus }}),
       
     })
     

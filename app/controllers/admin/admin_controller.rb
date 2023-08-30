@@ -31,6 +31,25 @@ class Admin::AdminController < ApplicationController
         render json: trader, status: :ok
       end
   
+      def all_transactions
+        transactions = Transaction.all
+        transactions_data = transactions.map do |transaction|
+          user = User.find(transaction.user_id)
+          {
+            user: user.email,
+            transaction_type: transaction.transaction_type,
+            transaction_date: transaction.created_at,
+            # Replace 'amount' with the correct attribute name from your Transaction model
+            amount: transaction.transaction_amount, 
+            price: transaction.transaction_price,
+            usd_value: transaction.transaction_amount * transaction.transaction_price
+          }
+        end
+        render json: { transactions: transactions_data }, status: :ok
+      rescue => e
+        render json: { error: e.message }, status: :internal_server_error
+      end
+      
 
 
       private

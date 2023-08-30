@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       put '/updateTrader/:id', to: 'admin#update_trader'
       get '/allTraders', to: 'admin#all_traders'
       get '/trader/:id', to: 'admin#show_trader'
+      get '/allTransactions', to: 'admin#all_transactions'
      
       
     end
