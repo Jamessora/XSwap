@@ -4,7 +4,7 @@ class MembersController < ApplicationController
     def show
         user = get_user_from_token
         render json: {
-            message: "Welcome, you have successfully logged in"
+            message: "Welcome, you have successfully logged in",
             user: user
         }
     end
@@ -16,5 +16,6 @@ class MembersController < ApplicationController
                                 Rails.application.credentials.devise[:jwt_secret_key]).first
         user_id =jwt_payload['sub']
         user = User.find(user_id.to_s)
-        end
     end
+    
+end
