@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  before_create :set_default_kyc_status
   has_one :kyc
   has_many :portfolio_items
   has_many :transactions
@@ -17,4 +18,8 @@ class User < ApplicationRecord
     self.balance ||= 1000.0
   end
   
+  def set_default_kyc_status
+    self.kyc_status ||= "nil"
+  end
+
 end
