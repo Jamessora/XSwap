@@ -7,8 +7,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     
     private
     def respond_with(resource, _opts = {})
+        puts "Debugging: Resource attributes: #{resource.attributes}"
         puts "Debugging: Resource errors: #{resource.errors.full_messages}"
         puts "Debugging: Resource KYC status: #{resource.kyc_status}"
+        
         register_success && return if resource.persisted?
 
         register_failed
