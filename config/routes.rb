@@ -10,7 +10,8 @@ Rails.application.routes.draw do
                 }
     get '/member-data', to: 'members#show'
     post 'api/kyc', to: 'kyc#create'
-
+    post '/api/confirm-email', to: 'users/confirmations#api_confirm'
+    
     devise_scope :user do
       get '/users/sessions/kyc_status', to: 'users/sessions#kyc_status', as: 'user_kyc_status'
     end
