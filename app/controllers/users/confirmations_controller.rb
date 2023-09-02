@@ -5,7 +5,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   
       if resource.errors.empty?
         set_flash_message!(:notice, :confirmed)
-        redirect_to 'https://xswap-fe.onrender.com/confirm-email?confirmation_token=#{params[:confirmation_token]}', allow_other_host: true
+        redirect_to "https://xswap-fe.onrender.com/confirm-email?confirmation_token=#{params[:confirmation_token]}", allow_other_host: true
       else
         render :action => 'new'
       end
