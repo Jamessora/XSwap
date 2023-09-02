@@ -11,16 +11,29 @@ class Users::SessionsController < Devise::SessionsController
       Rails.logger.debug "Is password valid? #{valid_password?(user)}"
       Rails.logger.debug "Is user confirmed? #{user.confirmed? if user}"
 
+        # if user.nil? || !valid_password?(user)
+        # render_invalid_email_or_password
+        # Rails.logger.info("Invalid email or password")
+        # elsif !user.confirmed?
+        # render_email_not_confirmed
+        # Rails.logger.info("User not confirmed")
+        # else
+        # render_successful_login
+        # Rails.logger.info("Login success")
+        # end
+
+        
         if user.nil? || !valid_password?(user)
-        render_invalid_email_or_password
-        Rails.logger.info("Invalid email or password")
+          render_invalid_email_or_password
+          Rails.logger.info("Invalid email or password")
         elsif !user.confirmed?
-        render_email_not_confirmed
-        Rails.logger.info("User not confirmed")
+          render_email_not_confirmed
+          Rails.logger.info("User not confirmed")
         else
-        render_successful_login
-        Rails.logger.info("Login success")
+          render_successful_login
+          Rails.logger.info("Login success")
         end
+
 
 
         
@@ -38,11 +51,11 @@ class Users::SessionsController < Devise::SessionsController
     private
     
     def find_user_by_email
-      User.find_by_email(params.dig(:user, :email))
+      User.find_by(email: params[:user][:email])
     end
     
     def valid_password?(user)
-      user.valid_password?(params.dig(:user, :password))
+      user&.valid_password?(params.dig(:user, :password))
     end
     
     def render_invalid_email_or_password
@@ -53,12 +66,12 @@ class Users::SessionsController < Devise::SessionsController
       render json: { error: 'Please confirm your email before logging in.' }, status: :unauthorized
     end
     
-      def render_successful_login
-        render json: {
+    def render_successful_login
+      render json: {
         message: 'You are logged in.',
         user: current_user
-        }, status: :ok
-      end
+      }, status: :ok
+    end
 
       def respond_to_on_destroy
       end
