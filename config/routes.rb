@@ -9,8 +9,7 @@ Rails.application.routes.draw do
                   confirmations: 'users/confirmations'
                 }
     devise_scope :user do
-      post '/api/confirm-email', to: 'users/confirmations#api_confirm'
-      get '/users/sessions/kyc_status', to: 'users/sessions#kyc_status', as: 'user_kyc_status'
+          get '/users/sessions/kyc_status', to: 'users/sessions#kyc_status', as: 'user_kyc_status'
     end
                 
     get '/member-data', to: 'members#show'
