@@ -10,6 +10,7 @@ Rails.application.routes.draw do
                 }
     devise_scope :user do
       post '/api/confirm-email', to: 'users/confirmations#api_confirm'
+      get '/users/sessions/kyc_status', to: 'users/sessions#kyc_status', as: 'user_kyc_status'
     end
                 
     get '/member-data', to: 'members#show'
@@ -22,9 +23,6 @@ Rails.application.routes.draw do
 
     
 
-    devise_scope :user do
-      get '/users/sessions/kyc_status', to: 'users/sessions#kyc_status', as: 'user_kyc_status'
-    end
                 
                  
     #devise_for :admins, path: 'admin'
