@@ -12,6 +12,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   end
 
   def api_confirm
+      @request.env["devise.mapping"] = Devise.mappings[:user]
       self.resource = resource_class.confirm_by_token(params[:confirmation_token])
       
       if resource.errors.empty?

@@ -8,9 +8,15 @@ Rails.application.routes.draw do
                   registrations: 'users/registrations',
                   confirmations: 'users/confirmations'
                 }
+    devise_scope :user do
+      post '/api/confirm-email', to: 'users/confirmations#api_confirm'
+    end
+                
     get '/member-data', to: 'members#show'
     post 'api/kyc', to: 'kyc#create'
-    post '/api/confirm-email', to: 'users/confirmations#api_confirm'
+   
+
+    
     # Make sure this route exists in your routes.rb
     get '/users/confirmation', to: 'users/confirmations#show'
 
