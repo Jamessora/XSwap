@@ -101,4 +101,52 @@
                 render json: { success: false, message: 'Sell failed', errors: transaction.errors.full_messages }, status: :unprocessable_entity
             end
         end
+
+        def calculate_pnl
+            @trades = Trade.where(user_id: current_user.id)
+            pnls = {} # Hash to store the PNL for each token
+        
+            # Get unique token names
+            unique_tokens = @trades.pluck(:token_name).uniq
+        
+            unique_tokens.each do |token_name|
+              # Filter trades for the current token
+              token_trades = @trades.where(token_name: token_name)
+              
+              remaining_usd_value = 0
+              remaining_amount_of_token = 0
+        
+              token_trades.each do |trade|
+                if trade.transaction_type == "buy"
+                  remaining_usd_value += trade.amount * trade.price
+                  remaining_amount_of_token += trade.amount
+                else # Assuming "sell"
+                  remaining_usd_value -= trade.amount * trade.price
+                  remaining_amount_of_token -= trade.amount
+                end
+              end
+        
+              # Fetch the current price
+              pair = token_name.downcase # Assuming token_name is the correct format
+              current_price = fetch_current_price(pair)
+              current_usd_value = remaining_amount_of_token * current_price
+        
+              pnl = current_usd_value - remaining_usd_value
+              pnls[token_name] = pnl
+            end
+        
+            # pnls now contains the PNL for each token
+            render json: { pnls: pnls }
+          end
+
+          private
+
+          def fetch_current_price(pair)
+            require 'rest-client'
+            require 'json'
+            response = RestClient.get "https://api.coingecko.com/api/v3/simple/price?ids=#{pair}&vs_currencies=usd"
+            json_data = JSON.parse(response.body)
+            json_data[pair]['usd']
+          end
+
     end

@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     namespace :api do
       post 'trades/buy', to: 'trades#buy'
       post 'trades/sell', to: 'trades#sell'
+      get 'trades/calculate_pnl', to: 'trades#calculate_pnl'
       
     end
 
