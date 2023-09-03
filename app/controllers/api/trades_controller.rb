@@ -116,7 +116,7 @@
             token_transactions = @transactions.where(token_id: token_id)
             
             puts "Calculated PNLs: #{pnls.inspect}"
-            
+
             remaining_usd_value = 0
             remaining_amount_of_token = 0
         
@@ -136,7 +136,8 @@
             current_usd_value = remaining_amount_of_token * current_price
         
             pnl = current_usd_value - remaining_usd_value
-            pnls[token.name] = pnl
+            
+            pnls.push({ token: token.name, pnl: pnl })
             end
         
             # pnls now contains the PNL for each token
