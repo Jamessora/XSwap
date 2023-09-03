@@ -106,7 +106,7 @@
 
         def calculate_pnl
             @transactions = Transaction.where(user_id: current_user.id)
-            pnls = {} # Hash to store the PNL for each token
+            pnls = [] # Hash to store the PNL for each token
         
             # Get unique token ids
             unique_tokens = @transactions.pluck(:token_id).uniq
