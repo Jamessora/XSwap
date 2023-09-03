@@ -60,12 +60,14 @@
             amount = params[:amount]
             total_usd_value = params[:total_usd_value].to_f
             
+            per_token_price = total_usd_value / amount
             puts "Creating transaction with params: #{params.inspect}"
             puts "Found Token: #{Token.find_by_ticker(token_ticker).inspect}"
 
             
             token = Token.find_by(ticker: token_ticker)
-    
+            
+            
             if token.nil?
                 render json: { success: false, message: 'Token not found', errors: ["Token must exist"] }, status: :unprocessable_entity
                 return
@@ -76,7 +78,7 @@
             transaction = Transaction.create(
                 transaction_type: 'sell',
                 transaction_amount: amount,
-                transaction_price: price,
+                transaction_price: per_token_price,
                 usd_value: total_usd_value,
                 user: current_user,
                 token: token
