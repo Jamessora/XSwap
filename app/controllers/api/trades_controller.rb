@@ -105,41 +105,43 @@
         end
 
         def calculate_pnl
-            @trades = Trade.where(user_id: current_user.id)
+            @transactions = Transaction.where(user_id: current_user.id)
             pnls = {} # Hash to store the PNL for each token
         
-            # Get unique token names
-            unique_tokens = @trades.pluck(:token_name).uniq
+            # Get unique token ids
+            unique_tokens = @transactions.pluck(:token_id).uniq
         
-            unique_tokens.each do |token_name|
-              # Filter trades for the current token
-              token_trades = @trades.where(token_name: token_name)
-              
-              remaining_usd_value = 0
-              remaining_amount_of_token = 0
+            unique_tokens.each do |token_id|
+            # Filter transactions for the current token
+            token_transactions = @transactions.where(token_id: token_id)
+            
+            puts "Calculated PNLs: #{pnls.inspect}"
+            
+            remaining_usd_value = 0
+            remaining_amount_of_token = 0
         
-              token_trades.each do |trade|
-                if trade.transaction_type == "buy"
-                  remaining_usd_value += trade.amount * trade.price
-                  remaining_amount_of_token += trade.amount
+            token_transactions.each do |transaction|
+                if transaction.transaction_type == "buy"
+                remaining_usd_value += transaction.transaction_amount * transaction.transaction_price
+                remaining_amount_of_token += transaction.transaction_amount
                 else # Assuming "sell"
-                  remaining_usd_value -= trade.amount * trade.price
-                  remaining_amount_of_token -= trade.amount
+                remaining_usd_value -= transaction.transaction_amount * transaction.transaction_price
+                remaining_amount_of_token -= transaction.transaction_amount
                 end
-              end
+            end
         
-              # Fetch the current price
-              pair = token_name.downcase # Assuming token_name is the correct format
-              current_price = fetch_current_price(pair)
-              current_usd_value = remaining_amount_of_token * current_price
+            # Fetch the current price
+            token = Token.find(token_id)
+            current_price = token.price
+            current_usd_value = remaining_amount_of_token * current_price
         
-              pnl = current_usd_value - remaining_usd_value
-              pnls[token_name] = pnl
+            pnl = current_usd_value - remaining_usd_value
+            pnls[token.name] = pnl
             end
         
             # pnls now contains the PNL for each token
             render json: { pnls: pnls }
-          end
+        end
 
           private
 
