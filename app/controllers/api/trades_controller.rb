@@ -49,7 +49,7 @@
                 portfolio_item.save
 
 
-                render json: { success: true, message: 'Buy successful', transaction: transaction }, status: :created
+                render json: { success: true, message: 'Buy successful', transaction: transaction, user: { balance: current_user.balance } }, status: :created
             else
                 render json: { success: false, message: 'Buy failed', errors: transaction.errors.full_messages }, status: :unprocessable_entity
             end
@@ -109,7 +109,7 @@
                 portfolio_item.save
                 end
             
-                render json: { success: true, message: 'Sell successful', transaction: transaction }, status: :created
+                render json: { success: true, message: 'Sell successful', transaction: transaction, user: { balance: current_user.balance } }, status: :created
             else
                 render json: { success: false, message: 'Sell failed', errors: transaction.errors.full_messages }, status: :unprocessable_entity
             end
