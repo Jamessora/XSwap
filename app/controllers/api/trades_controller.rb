@@ -178,6 +178,8 @@
                 new_token.name = pair.capitalize # or adjust this as necessary
               end
             
+              
+
             if token.nil?
             Rails.logger.error "Token not found for ticker: #{pair}"
             return nil
