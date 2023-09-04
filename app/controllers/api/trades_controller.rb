@@ -164,6 +164,12 @@
             require 'json'
           
             token = Token.find_by(ticker: pair)
+            
+            if token.nil?
+            Rails.logger.error "Token not found for ticker: #{pair}"
+            return nil
+            end
+            
             if token.price.nil? || token.price_updated_at < 1.minute.ago
               begin
                 response = RestClient.get "https://api.coingecko.com/api/v3/simple/price?ids=#{pair}&vs_currencies=usd"
