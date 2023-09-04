@@ -24,7 +24,7 @@
             end
 
             token.update(price: per_token_price)
-            
+
             transaction = Transaction.create(
                 transaction_type: 'buy',
                 transaction_amount: amount,
@@ -62,7 +62,7 @@
             amount = params[:amount]
             total_usd_value = params[:total_usd_value].to_f  
             
-            per_token_price = total_usd_value / amount
+            per_token_price = fetch_current_price(token_ticker)
             puts "Creating transaction with params: #{params.inspect}"
             puts "Found Token: #{Token.find_by_ticker(token_ticker).inspect}"
 
@@ -162,9 +162,18 @@
           def fetch_current_price(pair)
             require 'rest-client'
             require 'json'
-            response = RestClient.get "https://api.coingecko.com/api/v3/simple/price?ids=#{pair}&vs_currencies=usd"
-            json_data = JSON.parse(response.body)
-            json_data[pair]['usd']
+          
+            begin
+              response = RestClient.get "https://api.coingecko.com/api/v3/simple/price?ids=#{pair}&vs_currencies=usd"
+              json_data = JSON.parse(response.body)
+              json_data[pair]['usd']
+            rescue RestClient::ExceptionWithResponse => e
+              Rails.logger.error "Error fetching price: #{e.response}"
+              nil
+            rescue => e
+              Rails.logger.error "An error occurred: #{e.message}"
+              nil
+            end
           end
 
     end
