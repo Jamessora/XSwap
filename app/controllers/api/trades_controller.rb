@@ -163,16 +163,25 @@
             require 'rest-client'
             require 'json'
           
-            begin
-              response = RestClient.get "https://api.coingecko.com/api/v3/simple/price?ids=#{pair}&vs_currencies=usd"
-              json_data = JSON.parse(response.body)
-              json_data[pair]['usd']
-            rescue RestClient::ExceptionWithResponse => e
-              Rails.logger.error "Error fetching price: #{e.response}"
-              nil
-            rescue => e
-              Rails.logger.error "An error occurred: #{e.message}"
-              nil
+            token = Token.find_by(ticker: pair)
+            if token.price.nil? || token.price_updated_at < 1.minute.ago
+              begin
+                response = RestClient.get "https://api.coingecko.com/api/v3/simple/price?ids=#{pair}&vs_currencies=usd"
+                json_data = JSON.parse(response.body)
+                new_price = json_data[pair]['usd']
+                
+                # Update the price in the database
+                token.update(price: new_price, price_updated_at: Time.now)
+              rescue RestClient::ExceptionWithResponse => e
+                Rails.logger.error "Error fetching price: #{e.response}"
+                nil
+              rescue => e
+                Rails.logger.error "An error occurred: #{e.message}"
+                nil
+              end
+            else
+              # Use the cached price
+              token.price
             end
           end
 
