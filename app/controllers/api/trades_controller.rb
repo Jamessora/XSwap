@@ -174,7 +174,7 @@
             require 'rest-client'
             require 'json'
           
-            token = Token.find_or_create_by(external_id: pair) do |new_token|
+            token = Token.find_or_create_by(ticker: pair) do |new_token|
                 new_token.name = pair.capitalize # or adjust this as necessary
               end
             
