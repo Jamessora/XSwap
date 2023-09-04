@@ -7,7 +7,7 @@
             amount = params[:amount]
             total_usd_value = params[:total_usd_value].to_f
             
-            per_token_price = total_usd_value / amount
+            per_token_price = fetch_current_price(token_ticker)
             puts "Creating transaction with params: #{params.inspect}"
             puts "Found Token: #{Token.find_by_ticker(token_ticker).inspect}"
 
@@ -20,9 +20,11 @@
 
             token = Token.find_or_create_by(ticker: token_ticker) do |new_token|
                 new_token.name = token_ticker.capitalize
-                new_token.price = per_token_price
+                
             end
 
+            token.update(price: per_token_price)
+            
             transaction = Transaction.create(
                 transaction_type: 'buy',
                 transaction_amount: amount,
