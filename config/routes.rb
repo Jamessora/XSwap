@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       post 'trades/buy', to: 'trades#buy'
       post 'trades/sell', to: 'trades#sell'
       get 'trades/calculate_pnl', to: 'trades#calculate_pnl'
+      get 'trades/price', to: 'trades#price'
       
     end
 

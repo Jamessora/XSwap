@@ -157,7 +157,18 @@
             render json: { pnls: pnls }
         end
 
+        def price
+            pair = params[:pair]
+            current_price = fetch_current_price(pair)
+            if current_price
+              render json: { price: current_price }, status: :ok
+            else
+              render json: { error: 'Could not fetch price' }, status: :internal_server_error
+            end
+          end
+          
           private
+
 
           def fetch_current_price(pair)
             require 'rest-client'
@@ -174,10 +185,10 @@
               begin
                 response = RestClient.get "https://api.coingecko.com/api/v3/simple/price?ids=#{pair}&vs_currencies=usd"
                 json_data = JSON.parse(response.body)
-                new_price = json_data[pair]['usd']
+                current_price = json_data[pair]['usd']
                 
                 # Update the price in the database
-                token.update(price: new_price, price_updated_at: Time.now)
+                token.update(price: current_price, price_updated_at: Time.now)
               rescue RestClient::ExceptionWithResponse => e
                 Rails.logger.error "Error fetching price: #{e.response}"
                 nil
@@ -190,5 +201,7 @@
               token.price
             end
           end
+
+          
 
     end
