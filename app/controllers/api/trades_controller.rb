@@ -58,7 +58,7 @@
         def sell
             token_ticker = params[:token]
             amount = params[:amount]
-            total_usd_value = params[:total_usd_value].to_f
+            total_usd_value = params[:total_usd_value].to_f  
             
             per_token_price = total_usd_value / amount
             puts "Creating transaction with params: #{params.inspect}"
@@ -73,6 +73,19 @@
                 return
             end
 
+            portfolio_item = PortfolioItem.find_by(user: current_user, token: token)
+
+            # Check if the user has the token in their portfolio
+            if portfolio_item.nil?
+                render json: { success: false, message: 'Token not found in your portfolio', errors: ["You don't have enough #{token_ticker} tokens"] }, status: :unprocessable_entity
+                return
+            end
+            
+            # Check if the user has enough tokens to sell
+            if portfolio_item.amount < amount
+                render json: { success: false, message: 'Not enough tokens', errors: ["You don't have enough #{token_ticker} tokens"] }, status: :unprocessable_entity
+                return
+            end
 
         # Create transaction
             transaction = Transaction.create(
@@ -89,8 +102,6 @@
 
             if transaction.persisted?
                 current_user.update(balance: current_user.balance + total_usd_value)
-
-                portfolio_item = PortfolioItem.find_by(user: current_user, token: token)
 
                 # Update the amount if the portfolio item exists
                 if portfolio_item
