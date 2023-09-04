@@ -1,5 +1,10 @@
 class PortfolioItemsController < ApplicationController
   before_action :authenticate_user!
+
+    def show
+      render json: { balance: current_user.balance }
+    end
+    
     def index
       @portfolio_items = PortfolioItem.where(user_id: current_user.id).includes(:token)
       render json: @portfolio_items, include: [:token]
