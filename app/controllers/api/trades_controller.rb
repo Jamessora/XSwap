@@ -166,7 +166,7 @@
               render json: { error: 'Could not fetch price' }, status: :internal_server_error
             end
           end
-          
+
           private
 
 
@@ -174,7 +174,9 @@
             require 'rest-client'
             require 'json'
           
-            token = Token.find_by(ticker: pair)
+            token = Token.find_or_create_by(external_id: pair) do |new_token|
+                new_token.name = pair.capitalize # or adjust this as necessary
+              end
             
             if token.nil?
             Rails.logger.error "Token not found for ticker: #{pair}"
@@ -183,6 +185,7 @@
             
             if token.price.nil? || token.price_updated_at < 1.minute.ago
               begin
+                
                 response = RestClient.get "https://api.coingecko.com/api/v3/simple/price?ids=#{pair}&vs_currencies=usd"
                 json_data = JSON.parse(response.body)
                 current_price = json_data[pair]['usd']
