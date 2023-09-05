@@ -238,11 +238,12 @@
             else
                 # handle error
                 
-                return nil
+            return nil
+            end
                 rescue RestClient::ExceptionWithResponse => e
                 Rails.logger.error "Error fetching data from API: #{e.response}"
                 return nil
-            end
+            
            end
         #         def fetch_current_price(pair)
         #         require 'rest-client'
