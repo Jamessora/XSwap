@@ -7,7 +7,7 @@
             amount = params[:amount]
             total_usd_value = params[:total_usd_value].to_f
             
-            per_token_price = fetch_current_price(token_ticker)
+            per_token_price = fetch_current_price_new(token_ticker)
             puts "Creating transaction with params: #{params.inspect}"
             puts "Found Token: #{Token.find_by_ticker(token_ticker).inspect}"
 
@@ -62,7 +62,7 @@
             amount = params[:amount]
             total_usd_value = params[:total_usd_value].to_f  
             
-            per_token_price = fetch_current_price(token_ticker)
+            per_token_price = fetch_current_price_new(token_ticker)
             puts "Creating transaction with params: #{params.inspect}"
             puts "Found Token: #{Token.find_by_ticker(token_ticker).inspect}"
 
@@ -192,13 +192,44 @@
               render json: { status: 'error', message: 'Failed to fetch token data' }, status: :internal_server_error
             end
           end
+
+          def fetch_current_price_new(token_id)
+            require 'rest-client'
+            require 'json'
           
+            response = RestClient.get "https://api.coincap.io/v2/assets/#{token_id}?interval=d1"
+            data = JSON.parse(response.body)
+          
+            if data['data']
+                return data['data']['priceUsd'].to_f
+            else
+                # handle error
+                return nil
+            end
+          end
+
           private
 
+            
+            def fetch_current_price_new(token_id)
+            require 'rest-client'
+            require 'json'
+          
+            response = RestClient.get "https://api.coincap.io/v2/assets/#{token_id}?interval=d1"
+            data = JSON.parse(response.body)
+          
+            if data['data']
+                return data['data']['priceUsd'].to_f
+            else
+                # handle error
+                return nil
+            end
+            end
+
+            def fetch_token_data(token_id)
             require 'rest-client'
             require 'json'
 
-            def fetch_token_data(token_id)
             response = RestClient.get "https://api.coincap.io/v2/assets/#{token_id}?interval=d1"
             data = JSON.parse(response.body)
 
@@ -206,9 +237,13 @@
                 return data['data']
             else
                 # handle error
+                
+                return nil
+                rescue RestClient::ExceptionWithResponse => e
+                Rails.logger.error "Error fetching data from API: #{e.response}"
                 return nil
             end
-            end
+           end
         #         def fetch_current_price(pair)
         #         require 'rest-client'
         #         require 'json'
