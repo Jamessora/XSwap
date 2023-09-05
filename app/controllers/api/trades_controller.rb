@@ -7,6 +7,11 @@
             amount = params[:amount]
             total_usd_value = params[:total_usd_value].to_f
             
+            if total_usd_value > current_user.balance
+                render json: { success: false, message: 'Insufficient balance' }, status: :unprocessable_entity
+                return
+            end
+            
             per_token_price = fetch_current_price_new(token_ticker)
             puts "Creating transaction with params: #{params.inspect}"
             puts "Found Token: #{Token.find_by_ticker(token_ticker).inspect}"
@@ -24,6 +29,7 @@
             end
 
             token.update(price: per_token_price)
+            
 
             transaction = Transaction.create(
                 transaction_type: 'buy',
