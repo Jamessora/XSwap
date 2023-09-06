@@ -10,6 +10,7 @@ Rails.application.routes.draw do
                 }
     devise_scope :user do
           get '/users/sessions/kyc_status', to: 'users/sessions#kyc_status', as: 'user_kyc_status'
+          delete 'logout', to: 'users/sessions#destroy'
     end
                 
     get '/member-data', to: 'members#show'

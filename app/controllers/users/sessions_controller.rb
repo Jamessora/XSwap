@@ -48,6 +48,13 @@ class Users::SessionsController < Devise::SessionsController
       end
     end
   
+    def destroy
+      sign_out current_user
+      render json: {message: 'You have logged out successfully.'},
+      status: :ok
+    end
+
+
     private
     
     def find_user_by_email
@@ -73,18 +80,10 @@ class Users::SessionsController < Devise::SessionsController
       }, status: :ok
     end
 
-      def respond_to_on_destroy
-      end
+  
+   
 
-      def log_out_success
-        render json: {message: 'You have logged out successfully'}, 
-        status: :ok
-      end
-
-      def log_out_failure
-        render json: {message: 'You have logged out successfully'},
-        status: :unauthorized
-      end
+      
 end
 
 
