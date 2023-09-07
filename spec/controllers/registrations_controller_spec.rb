@@ -10,7 +10,8 @@ RSpec.describe Users::RegistrationsController, type: :controller do
   describe "POST #create" do
     context "with valid parameters" do
       let(:valid_attributes) {
-        attributes_for(:user)
+        
+        attributes_for(:user).merge(balance: 1000.0, kyc_status: nil)
       }
 
       it "creates a new User" do
