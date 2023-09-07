@@ -13,6 +13,8 @@ class KycController < ApplicationController
     
       if kyc_record.update(kyc_data) # Update the KYC record with new data
         user.update(kyc_status: "pending") # Update the kyc_status of the user
+        puts "User KYC Status after update: #{user.kyc_status}"
+        puts "User update errors: #{user.errors.full_messages}"
         render json: { message: 'KYC submitted successfully.' }, status: :ok
       else
         render json: { error: 'Failed to submit KYC data', details: kyc_record.errors.full_messages }, status: :unprocessable_entity

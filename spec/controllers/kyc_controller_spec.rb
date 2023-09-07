@@ -40,7 +40,7 @@ RSpec.describe KycController, type: :controller do
         it "updates the user's KYC status to pending" do
           post :create, params: valid_kyc_data
           user.reload
-          expect(user.kyc_status).to eq(nil)
+          expect(user.kyc_status).to eq("pending")
         end
       end
 
