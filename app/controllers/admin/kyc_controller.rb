@@ -15,7 +15,7 @@ class Admin::KycController < ApplicationController
           email: user.email,
           fullName: user.kyc.fullName,
           birthday: user.kyc.birthday,
-          address: user.kyc.address
+          address: user.kyc.address,
           idType: user.kyc.idType,
           idNumber: user.kyc.idNumber,
           # Add other KYC details here
