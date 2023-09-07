@@ -66,6 +66,7 @@ class Api::TradesController < ApplicationController
     
         # pnls now contains the PNL for each token
         render json: { pnls: pnls }
+        puts "PNL: #{pnls.inspect}"
     end
 
    
@@ -73,10 +74,11 @@ class Api::TradesController < ApplicationController
     def price
         token_id = params[:pair]
         token_data = fetch_token_data(token_id)
-      
+
+        puts "Token Data: #{token_data.inspect}"
         if token_data
           token = Token.find_or_create_by(external_id: token_data['id']) do |new_token|
-            new_token.ticker = token_data['symbol'].downcase
+            new_token.ticker = token_data['symbol'].downcase if token_data['symbol'].present?
             new_token.name = token_data['name']
             new_token.price = token_data['priceUsd']
           end
@@ -101,11 +103,15 @@ class Api::TradesController < ApplicationController
       private
 
       def set_token
-        @token_ticker = params[:token]
-        @token = Token.find_or_initialize_by(ticker: @token_ticker) do |new_token|
-          new_token.name = @token_ticker.capitalize
+        @token_ticker = params[:pair] || params[:token]
+        if @token_ticker
+          @token = Token.find_or_initialize_by(ticker: @token_ticker) do |new_token|
+            new_token.name = @token_ticker.capitalize
+          end
+          @token.update(price: fetch_current_price_new(@token_ticker))
+        else
+          render json: { error: "Token parameter is missing" }, status: :unprocessable_entity
         end
-        @token.update(price: fetch_current_price_new(@token_ticker))
       end
 
       def set_transaction_params
@@ -162,15 +168,17 @@ class Api::TradesController < ApplicationController
         def fetch_token_data(token_id)
         require 'rest-client'
         require 'json'
-
+        puts "Fetching data for token_id: #{token_id}" # Add this line to debug
         response = RestClient.get "https://api.coincap.io/v2/assets/#{token_id}?interval=d1"
         data = JSON.parse(response.body)
 
         if data['data']
+            puts "Response Data: #{data['data'].inspect}"
             return data['data']
+            
         else
             # handle error
-            
+            puts "fetch token data error: #{e.response}"
         return nil
         end
             rescue RestClient::ExceptionWithResponse => e
