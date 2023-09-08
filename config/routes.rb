@@ -8,9 +8,21 @@ Rails.application.routes.draw do
                   registrations: 'users/registrations',
                   confirmations: 'users/confirmations'
                 }
+
+   devise_for :admins,
+                controllers: {
+                    sessions: 'admin/sessions',
+                    registrations: 'admin/registrations',
+                    confirmations: 'admin/confirmations'         
+    }            
     devise_scope :user do
           get '/users/sessions/kyc_status', to: 'users/sessions#kyc_status', as: 'user_kyc_status'
           delete 'logout', to: 'users/sessions#destroy'
+    end
+
+    devise_scope :admin do
+    
+      delete 'logout', to: 'admin/sessions#destroy'
     end
                 
     get '/member-data', to: 'members#show'
@@ -18,7 +30,7 @@ Rails.application.routes.draw do
    
 
     
-    # Make sure this route exists in your routes.rb
+
     get '/users/confirmation', to: 'users/confirmations#show'
 
     

@@ -11,27 +11,20 @@ class Users::SessionsController < Devise::SessionsController
       Rails.logger.debug "Is password valid? #{valid_password?(user)}"
       Rails.logger.debug "Is user confirmed? #{user.confirmed? if user}"
 
-        # if user.nil? || !valid_password?(user)
-        # render_invalid_email_or_password
-        # Rails.logger.info("Invalid email or password")
-        # elsif !user.confirmed?
-        # render_email_not_confirmed
-        # Rails.logger.info("User not confirmed")
-        # else
-        # render_successful_login
-        # Rails.logger.info("Login success")
-        # end
-
-        
+          
         if user.nil? || !valid_password?(user)
           render_invalid_email_or_password
           Rails.logger.info("Invalid email or password")
         elsif !user.confirmed?
           render_email_not_confirmed
           Rails.logger.info("User not confirmed")
+        elsif user.role != "user" # Checking the role of the user
+          render_role_restricted
+          Rails.logger.info("Access restricted to user role")
         else
           render_successful_login
           Rails.logger.info("Login success")
+
         end
 
 
@@ -53,8 +46,7 @@ class Users::SessionsController < Devise::SessionsController
       render json: {message: 'You have logged out successfully.'},
       status: :ok
     end
-
-
+      
     private
     
     def find_user_by_email
@@ -73,6 +65,11 @@ class Users::SessionsController < Devise::SessionsController
       render json: { error: 'Please confirm your email before logging in.' }, status: :unauthorized
     end
     
+    def render_role_restricted
+      render json: { error: 'Access restricted to user role.' }, status: :forbidden
+    end
+
+
     def render_successful_login
       render json: {
         message: 'You are logged in.',
